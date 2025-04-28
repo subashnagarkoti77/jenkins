@@ -22,6 +22,7 @@
     <input type="checkbox" name="newsletter" id="newsletter">
     <label for="newsletter">Subscribe?</label><br><br>
     <input type="submit" value="Submit">
+<p>Thankyou</p>
 </form>
 </body>
 </html>
