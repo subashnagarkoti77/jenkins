@@ -30,10 +30,30 @@ pipeline {
                       sh 'docker build -t $dockerImage:$BUILD_NUMBER .'
                     }
         }
-        stage('DeploytoDevenv') {
-            steps {
-                echo 'depolying the dev env'
-            }
+        stage('Push Image'){
+                  agent {
+                    label 'ubuntu-slave-node'
+                  }
+                    steps {
+                        withDockerRegistry([credentialsId: 'dockerhubcredentials', url: '']) {
+                            sh '''
+                            docker push $dockerImage:$BUILD_NUMBER
+                            '''
+                        }
+                    }
+        }
+        stage('Deploy to Development Env') {
+                    agent {
+                        label 'ubuntu-slave-node'
+                    }
+                    steps {
+                        echo "Running app on development env"
+                        sh '''
+                        docker stop subashtryjenkins || true
+                        docker rm subashtryjenkins || true
+                        docker run -itd --name subashtryjenkins -p 8082:8080 $dockerImage:$BUILD_NUMBER
+                        sh '''
+                    }
         }
         stage('DeploytoProduction') {
             steps {
