@@ -5,14 +5,14 @@ pipeline {
         dockerImage="subash/mavenapp"
     }
     stages {
-        stage('BUILD') {
+        stage('Building the maven app') {
             agent {
                     label 'ubuntu-slave-node'
                 }
             steps {
                sh 'mvn -f pom.xml clean package'
             }
-            posts {
+            post {
                 success {
                 echo "Build complete and now archiving artifacts"
                 archiveArtifacts artifacts: '**/*.war', followSymlinks: false
