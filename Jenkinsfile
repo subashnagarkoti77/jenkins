@@ -55,11 +55,22 @@ pipeline {
                         sh '''
                     }
         }
-        stage('DeploytoProduction') {
-            steps {
-                echo 'Deploying to production env'
-            }
-        }
+        stage('Deploy to Production Env') {
+                    agent {
+                        label 'ubuntu-slave-node'
+                    }
+                    steps {
+                        timeout(time:5, unit:'MINUTES'){
+                        input message:'Approve PRODUCTION Deployment?'
+                        }
+                        echo "Running app on Prod env"
+                        sh '''
+                        docker stop subashtryjenkins || true
+                        docker rm subashtryjenkins || true
+                        docker run -itd --name subashtryjenkins -p 8083:8080 $dockerImage:$BUILD_NUMBER
+                        '''
+                    }
+                }
     }
 }
 
