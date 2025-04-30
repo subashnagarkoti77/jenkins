@@ -1,16 +1,34 @@
 pipeline {
     agent any
 
+    environment {
+        dockerImage="subash/mavenapp"
+    }
     stages {
         stage('BUILD') {
+            agent {
+                    label 'ubuntu-slave-node'
+                }
             steps {
-                echo 'building the code'
+               sh 'mvn -f pom.xml clean package'
+            }
+            posts {
+                success {
+                echo "Build complete and now archiving artifacts"
+                archiveArtifacts artifacts: '**/*.war', followSymlinks: false
+                }
             }
         }
-        stage('UNIT-TEST') {
-            steps {
-                echo 'Running the unit test'
-            }
+        stage('Docker image build'){
+                    agent {
+                      label 'ubuntu-slave-node'
+                   }
+                    steps{
+                      copyArtifacts filter: '**/*.war', fingerprintArtifacts: true, projectName: env.JOB_NAME, selector: specific(env.BUILD_NUMBER)
+                      echo "building docker image"
+                      sh 'whoami'
+                      sh 'docker build -t $dockerImage:$BUILD_NUMBER .'
+                    }
         }
         stage('DeploytoDevenv') {
             steps {
