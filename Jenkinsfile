@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        dockerImage="subash/mavenapp"
+        dockerImage= "subashn77/mavenapp"
     }
     stages {
         stage('Building the maven app') {
