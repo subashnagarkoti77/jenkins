@@ -71,6 +71,7 @@ pipeline {
                         '''
                     }
         }
+    }
          post{
                 always {
                     mail to: 'subnag77@gmail.com',
@@ -96,5 +97,5 @@ pipeline {
                         DevOps Team""", cc: '', from: '', replyTo: '', subject: 'BUILD FAILED NOTIFICATION', to: 'subnag77@gmail.com'
                 }
          }
-    }
+
 }
