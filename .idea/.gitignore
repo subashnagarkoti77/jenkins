@@ -1,6 +1,1 @@
-# Ignore IntelliJ IDEA project files
-.idea/
-*.iml
 
-# Maven target directory
-/target/
